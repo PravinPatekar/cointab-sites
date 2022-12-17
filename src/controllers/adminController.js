@@ -2,7 +2,7 @@ const adminModel = require("../models/adminModel");
 const { isValideAdmin } = require("../inputDataValidation/dataValidation")
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
-require('dotenv').config();
+const {secretKey} = require('../config/keys')
 
 
 //Creact admin
@@ -35,7 +35,7 @@ const creactAdmin = async (req, res) => {
             password: hashpassword
         };
 
-        const createUser = await adminModel.create(AdminData);
+        await adminModel.create(AdminData);
         return res.status(201).send({ status: true, message: "User created successfully"})
 
 
@@ -74,7 +74,7 @@ const adminLogin = async (req, res) => {
         }
 
         // creating JWT
-        const token = jwt.sign({ userId: isEmailUnique._id }, 'awefhseuuuuuuugvfskejkbvg', { expiresIn: "1h" });
+        const token = jwt.sign({ userId: isEmailUnique._id }, secretKey, { expiresIn: "1h" });
 
         //Format of data.
         let Data = {

@@ -10,6 +10,7 @@ import { Container, Stack } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import {SERVER_URI} from '../../config/keys'
 
 export default function MaterialTable() {
 
@@ -69,7 +70,7 @@ export default function MaterialTable() {
   //fetching user data from server
   const getUsers = async () => {
     try {
-      const comingData = await axios.get("http://localhost:8080/users");
+      const comingData = await axios.get(`${SERVER_URI}/users`);
       let data = comingData.data.data
       for(let i = 0; i < data.length; i++){
         data[i].id = data[i]._id
@@ -110,7 +111,7 @@ export default function MaterialTable() {
       try {
         // const confirm = window.confirm("Are you sure, you want to update this row ?")
         // confirm && fetch(url + `/${formData.id}`, {
-        const url = "http://localhost:8080/users";
+        const url = `${SERVER_URI}/users`;
         const { data: res } = await axios.delete(url + `/${id}`,);
         navigate("/dashboard");
         console.log(res.message);
@@ -134,7 +135,7 @@ export default function MaterialTable() {
       try {
         // const confirm = window.confirm("Are you sure, you want to update this row ?")
         // confirm && fetch(url + `/${formData.id}`, {
-        const url = "http://localhost:8080/users";
+        const url = `${SERVER_URI}/users`;
         const { data: res } = await axios.put(url + `/${formData.id}`, formData);
         navigate("/dashboard");
         console.log(res.message);
@@ -152,7 +153,7 @@ export default function MaterialTable() {
     } else {
       // adding new user
       try {
-        const url = "http://localhost:8080/users";
+        const url = `${SERVER_URI}/users`;
         await axios.post(url, formData);
         navigate("/dashboard");
         handleClose()

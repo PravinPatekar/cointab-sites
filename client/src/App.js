@@ -18,10 +18,11 @@ function App() {
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" exact element={<Home  />} />
+				<Route path="/home" exact element={<Home  />} />
 				<Route path="/about" exact element={<About />} />
 				<Route path="/blogs" exact element={<Blogs  />} />
 				<Route path="/careers" exact element={<Careers />} />
-				<Route path="/contacts" exact element={<Contacts  />} />
+				<Route path="/contact" exact element={<Contacts  />} />
 				<Route path="/help-center" exact element={<HelpCenter />} />
 				<Route path="/investers" exact element={<Investers  />} />
 				<Route path="*" exact element={<NotFound  />} />

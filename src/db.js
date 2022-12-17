@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const DB = "mongodb+srv://Project_6:4v8EFCyqV6HOVh9H@cluster0.u6u38bx.mongodb.net/Project_6?retryWrites=true&w=majority"
+const {DB} = require('./config/keys')
 
 module.exports = () => {
 	const connectionParams = {

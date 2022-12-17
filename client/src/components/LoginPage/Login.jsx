@@ -19,6 +19,7 @@ import { Container, Stack } from '@mui/system';
 import axios from "axios";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import {SERVER_URI} from '../../config/keys'
 
 
 export default function Login() {
@@ -46,9 +47,9 @@ export default function Login() {
     };
 
 	const handleSubmit = async (e) => {
-		e.preventDefault();
+		// e.preventDefault();
 		try {
-			const url = "http://localhost:8080/login";
+			const url = `${SERVER_URI}/login`
 			const { data: res } = await axios.post(url, values);
 			localStorage.setItem("token", res.data.token);
             localStorage.setItem("userId", res.data.userId);
@@ -89,7 +90,7 @@ export default function Login() {
                             </Alert>
                         )}
                         <FormControl sx={{ m: 1, width: '40ch' }} variant="standard">
-                            <InputLabel htmlFor="standard-adornment-password">email</InputLabel>
+                            <InputLabel htmlFor="standard-adornment-email">email</InputLabel>
                             <Input
                                 id="standard-adornment-email"
                                 type='email'

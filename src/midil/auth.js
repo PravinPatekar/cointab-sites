@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const ObjectId = mongoose.Schema.Types.ObjectId
 const jwt = require("jsonwebtoken");
-require('dotenv').config();
+const {secretKey} = require('../config/keys')
 
 //Authentication of user.
 
@@ -15,7 +15,7 @@ const authentication = async (req, res, next) => {
             return res.status(400).send({ status: false, msg: "Please enter token number." })
         }
         //Verify sekret key
-        let decodedToken = jwt.verify(String(token), 'awefhseuuuuuuugvfskejkbvg', { ignoreExpiration: true }, function (error, done) {
+        let decodedToken = jwt.verify(String(token), secretKey, { ignoreExpiration: true }, function (error, done) {
             if (error) {
                 return res.status(401).send({ status: false, message: "Token is Invalid" });
             }

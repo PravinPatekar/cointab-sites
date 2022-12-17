@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+import {SERVER_URI} from '../../config/keys'
 
 
 export default function SignUp() {
@@ -49,7 +50,7 @@ export default function SignUp() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const url = "http://localhost:8080/signup";
+            const url = `${SERVER_URI}/signup`;
             const { data: res } = await axios.post(url, values);
             navigate("/login");
             console.log(res.message);

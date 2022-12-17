@@ -78,8 +78,8 @@ const updateStudentData = async (req, res) => {
         const isUnique = await studentModel.findOne({"userId": userId, "_id": sId, "isDeleted": false});
         if(!isUnique) return res.status(404).send({status: false, message: "Invalid student"})
 
-        let r = await studentModel.findOneAndUpdate({ _id: isUnique._id }, data, { new: true })
-        return res.status(200).send({ status: true, message: "studet profile updated" , "data": r});
+        await studentModel.findOneAndUpdate({ _id: isUnique._id }, data, { new: true })
+        return res.status(200).send({ status: true, message: "studet profile updated" });
 
     } catch (error) {
         return res.status(500).send({ status: false, message: error.message })
