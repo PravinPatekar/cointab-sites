@@ -1,3 +1,3 @@
 module.exports = {
-    SERVER_URI: process.env.VERCEL_URL
+    SERVER_URI: "https://aaoochale.vercel.app"
 }
