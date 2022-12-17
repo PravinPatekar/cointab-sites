@@ -24,12 +24,19 @@ app.use('/', router);
 
 //vercel 
 
-if(process.env.NODE_ENV == 'production'){
+if (process.env.NODE_ENV == 'production') {
     const path = require('path')
+    app.use(express.static(path.join(__dirname, "../client/build")));
 
-    app.get('/',(req, res)=>{
-        app.use(express.static(path.resolve(__dirname, 'client','build')))
-        app.sendFile(path.resolve(__dirname, 'client','build', 'index.html'))
+    app.get("*", function (_, res) {
+        res.sendFile(
+            path.join(__dirname, "../client/build/index.html"),
+            function (err) {
+                if (err) {
+                    res.status(500).send(err)
+                }
+            }
+        )
     })
 }
 
