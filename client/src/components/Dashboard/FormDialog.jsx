@@ -11,8 +11,9 @@ import AlertTitle from '@mui/material/AlertTitle';
 
 
 
-export default function FormDialog({open,handleClose,data,error, onChange,handleFormSubmit}) {
- const {id,fname,lname,subjects,number}=data
+export default function FormDialog({open,opens,handleClose,data,error, onChange,handleFormSubmit}) {
+ const {id,userName, email, password, confirmPassword}=data
+
 
   return (
     <div>
@@ -22,7 +23,7 @@ export default function FormDialog({open,handleClose,data,error, onChange,handle
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{id?"Update user":"Create new user"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{id?(opens?"User profile details":"Update user"):"Create new user"}</DialogTitle>
         {error && (
                 <Alert severity="error">
                     <AlertTitle>Error</AlertTitle>
@@ -31,19 +32,56 @@ export default function FormDialog({open,handleClose,data,error, onChange,handle
             )}
         <DialogContent>
          <form>
-             <TextField id="fname" value={fname} onChange={e=>onChange(e)} placeholder="Enter name" label="First Name" variant="outlined" margin="dense" fullWidth />
-             <TextField id="lname" value={lname} onChange={e=>onChange(e)} placeholder="Enter email" label="Last Name" variant="outlined" margin="dense" fullWidth />
-             <TextField id="subjects" value={subjects} onChange={e=>onChange(e)} placeholder="Enter subject" label="Subjects" variant="outlined" margin="dense" fullWidth />
-             <TextField id="number" value={number} onChange={e=>onChange(e)} placeholder="Enter number" label="Number" variant="outlined" margin="dense" fullWidth />
+             <TextField 
+             id="userName" 
+             type="text" 
+             value={userName} 
+             onChange={e=>onChange(e)} 
+             placeholder="Enter name" 
+             label="User Name" 
+             variant="outlined" 
+             margin="dense" fullWidth />
+
+             <TextField id="email"
+              type="email" 
+              value={email} 
+              onChange={e=>onChange(e)} 
+              placeholder="Enter email" 
+              label="Email Id" 
+              variant="outlined" 
+              margin="dense" fullWidth />
+
+             {opens? "" :
+             (<TextField 
+             id="password" 
+             type="password" 
+             value={password} 
+             onChange={e=>onChange(e)} 
+             placeholder="Enter password" 
+             label="Password" 
+             variant="outlined"
+              margin="dense" fullWidth />)}
+
+             {opens? "" :
+             (<TextField 
+             id="confirmPassword" 
+             type="password" 
+             value={confirmPassword} 
+             onChange={e=>onChange(e)} 
+             placeholder="Enter confirm Password" 
+             label="Confirm Password" 
+             variant="outlined" 
+             margin="dense" fullWidth />)}
+
          </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="secondary" variant="outlined">
             Cancel
           </Button>
-          <Button  color="primary" onClick={()=>handleFormSubmit()} variant="contained">
+          {opens?"":(<Button  color="primary" onClick={()=>handleFormSubmit()} variant="contained">
             {id?"Update":"Submit"}
-          </Button>
+          </Button>)}
         </DialogActions>
       </Dialog>
     </div>

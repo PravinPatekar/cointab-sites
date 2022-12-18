@@ -10,7 +10,10 @@ import { Container, Stack } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import {SERVER_URI} from '../../config/keys'
+import { SERVER_URI } from '../../config/keys'
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import Poppup from './Poppup'
+
 
 export default function MaterialTable() {
 
@@ -18,7 +21,7 @@ export default function MaterialTable() {
   const user = localStorage.getItem("userId");
 
 
-  const initialValue = { fname: "", lname: "", subjects: "", number: null, userId: user }
+  const initialValue = { userName: "", email: "", password: "", confirmPassword: "", view: null, userId: user }
   const [tableData, setTableData] = useState(null)
   const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = useState(initialValue)
@@ -29,6 +32,8 @@ export default function MaterialTable() {
 
 
   const [error, setError] = useState("");
+  const [opens, setOpens] = React.useState(false);
+  const [opendelet, setDelet] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -36,6 +41,8 @@ export default function MaterialTable() {
 
   const handleClose = () => {
     setOpen(false);
+    setOpens(false);
+    setDelet(false)
     setFormData(initialValue)
   };
 
@@ -43,19 +50,17 @@ export default function MaterialTable() {
 
   const columnDefs = [
     { headerName: "ID", field: "id" },
-    { headerName: "First Name", field: "fname", },
-    { headerName: "Last Name", field: "lname", },
-    { headerName: "Subjects", field: "subjects", },
-    { headerName: "Number", field: "number" },
+    { headerName: "User Name", field: "userName", },
+    { headerName: "Email Id", field: "email", },
     {
-      headerName: "Actions", field: "id", cellRendererFramework: (params) => <div>
-        <Button variant="outlined" color="primary" onClick={() => handleUpdate(params.data)}><EditIcon />Update</Button>
-        <Button variant="outlined" color="secondary" onClick={() => handleDelete(params.value)}><DeleteIcon /> Delete</Button>
-      </div>
+      headerName: "Actions", field: "id", cellRendererFramework: (params) => <Box spacing={3}>
+        <Button variant="text" color="primary" sx={{ml:"10px"}} onClick={() => handleUpdate(params.data)}><EditIcon /></Button>
+        <Button variant="text" color="secondary" sx={{ml:"10px"}} onClick={() => handleView(params.data)}><VisibilityIcon /></Button>
+        <Button variant="text" color="secondary" sx={{ml:"10px", color:"red"}} onClick={() => handleDelete(params.data)}><DeleteIcon /></Button>
+      </Box>
     },
 
   ]
-
 
 
   axios.interceptors.request.use(
@@ -72,12 +77,12 @@ export default function MaterialTable() {
     try {
       const comingData = await axios.get(`${SERVER_URI}/users`);
       let data = comingData.data.data
-      for(let i = 0; i < data.length; i++){
+      for (let i = 0; i < data.length; i++) {
         data[i].id = data[i]._id
       }
       setTableData(data)
       console.log(data)
-      
+
       // console.log(row)
     } catch (error) {
       return error
@@ -95,6 +100,12 @@ export default function MaterialTable() {
     setFormData({ ...formData, [id]: value })
   }
 
+  // setting view row data to form data and opening pop up window
+  const handleView = (oldData) => {
+    setOpens(true)
+    setFormData(oldData)
+    handleClickOpen()
+  }
 
 
   // setting update row data to form data and opening pop up window
@@ -104,26 +115,30 @@ export default function MaterialTable() {
     handleClickOpen()
   }
 
+
+  // setting update row data to form data and opening pop up window
+  const handleDelete = (oldData) => {
+    setDelet(true)
+    setFormData(oldData)
+    handleClickOpen()
+  }
+
   //deleting a user
-  const handleDelete = async (id) => {
-    const confirm = window.confirm(`Are you sure, you want to delete this row : ${id}`)
-    if (confirm) {
-      try {
-        // const confirm = window.confirm("Are you sure, you want to update this row ?")
-        // confirm && fetch(url + `/${formData.id}`, {
-        const url = `${SERVER_URI}/users`;
-        const { data: res } = await axios.delete(url + `/${id}`,);
-        navigate("/dashboard");
-        console.log(res.message);
-        getUsers()
-      } catch (error) {
-        if (
-          error.response &&
-          error.response.status >= 400 &&
-          error.response.status <= 500
-        ) {
-          setError(error.response.data.message);
-        }
+  const handleforDelete = async (id) => {
+    try {
+      const url = `${SERVER_URI}/users`;
+      const { data: res } = await axios.delete(url + `/${id}`,);
+      navigate("/dashboard");
+      console.log(res.message);
+      handleClose()
+      getUsers()
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.status >= 400 &&
+        error.response.status <= 500
+      ) {
+        setError(error.response.data.message);
       }
     }
   }
@@ -190,9 +205,8 @@ export default function MaterialTable() {
   }
   return (
     <div className="App">
-      <Container maxWidth="xl">
-        <h1 align="center">React-App</h1>
-        <h3>CRUD Operation  in ag-Grid</h3>
+      <Container maxWidth="xl" sx={{ mt: '80px' }}>
+        <h3>CRUD Operation  on Users table</h3>
         <Stack
           direction="row"
           justifyContent="space-evenly"
@@ -206,7 +220,7 @@ export default function MaterialTable() {
             style={searchStyle}
             onInput={onFilterTextChange}
           />
-          <Button variant="contained" color="primary" onClick={handleClickOpen}><PersonAddIcon/> Add student</Button>
+          <Button variant="contained" color="primary" onClick={handleClickOpen}><PersonAddIcon /> Add User</Button>
         </Stack>
         <Box className="ag-theme-alpine" sx={{ height: "400px", width: "100%" }}>
           <AgGridReact
@@ -220,8 +234,9 @@ export default function MaterialTable() {
           />
         </Box>
       </Container >
-      <FormDialog open={open} handleClose={handleClose}
-        data={formData} error={error} onChange={onChange} handleFormSubmit={handleFormSubmit} />
+      {opendelet ? (<Poppup open={open} handleClose={handleClose} handleforDelete={handleforDelete} data={formData} />) :
+        (<FormDialog open={open} handleClose={handleClose}
+          data={formData} opens={opens} error={error} onChange={onChange} handleFormSubmit={handleFormSubmit} />)}
     </div>
   );
 }

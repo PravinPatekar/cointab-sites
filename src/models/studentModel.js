@@ -1,25 +1,21 @@
 const mongoose = require("mongoose")
 const ObjectId = mongoose.Schema.Types.ObjectId
 
-const studentSchema = new mongoose.Schema({
-    fname: {
+const userSchema = new mongoose.Schema({
+    userName: {
         type: String,
         required: true,
         trim: true
     },
-    lname: {
+    email: {
         type: String,
         required: true,
         trim: true
     },
-    subjects: {
+    password: {
         type: String,
         required: true,
-        enum : ['Mathematics','English','Communication','Philosophy','Natural','Social'],
-    },
-    number: {
-        type: Number,
-        required: true,
+        trim: true,
     },
     userId:{
         type     : ObjectId,
@@ -38,7 +34,7 @@ const studentSchema = new mongoose.Schema({
 }, { timestamps: true })
 
 
-module.exports = mongoose.model("Students", studentSchema)
+module.exports = mongoose.model("Users", userSchema)
 
 
 
