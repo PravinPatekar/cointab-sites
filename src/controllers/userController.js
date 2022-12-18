@@ -1,4 +1,4 @@
-const adminModel = require("../models/adminModel");
+const userModel = require("../models/userModel");
 const { isValideAdmin } = require("../inputDataValidation/dataValidation")
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
@@ -19,7 +19,7 @@ const createUser = async (req, res) => {
             return res.status(400).send({ status: false, message: msgUserData })
         }
 
-        const isEmailUnique = await adminModel.findOne({ email });
+        const isEmailUnique = await userModel.findOne({ email });
         if (isEmailUnique) {
             return res.status(400).send({ status: false, message: `email: ${email} already exist` });
         }
@@ -34,7 +34,7 @@ const createUser = async (req, res) => {
             password: hashpassword
         };
 
-        await adminModel.create(AdminData);
+        await userModel.create(AdminData);
         return res.status(201).send({ status: true, message: "User created successfully"})
 
 
@@ -61,7 +61,7 @@ const userLogin = async (req, res) => {
             return res.status(400).send({ status: false, message: msgUserData })
         }
 
-        const isEmailUnique = await adminModel.findOne({ email });
+        const isEmailUnique = await userModel.findOne({ email });
         if (!isEmailUnique) {
             return res.status(400).send({ status: false, message: "invalid login credentials" });
         }

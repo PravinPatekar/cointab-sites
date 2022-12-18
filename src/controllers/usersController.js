@@ -1,4 +1,4 @@
-const studentModel = require("../models/studentModel");
+const usersModel = require("../models/usersModel");
 const { isValideStudent, isValideUpdate } = require("../inputDataValidation/dataValidation")
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcryptjs');
@@ -21,7 +21,7 @@ const creactStudentData = async (req, res) => {
             return res.status(400).send({ status: false, message: msgUserData })
         }
 
-        const isUnique = await studentModel.findOne({
+        const isUnique = await usersModel.findOne({
             "email": email, "isDeleted": false
         });
 
@@ -37,7 +37,7 @@ const creactStudentData = async (req, res) => {
             "password": hashpassword, "userId": userId
         }
 
-        await studentModel.create(data);
+        await usersModel.create(data);
         return res.status(201).send({ status: true, message: "User created successfully" })
 
     } catch (error) {
@@ -50,7 +50,7 @@ const getStudentData = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*')
     try {
         let userId = req.Id
-        const data = await studentModel.find({ 'isDeleted': false, 'userId': userId }).select({
+        const data = await usersModel.find({ 'isDeleted': false, 'userId': userId }).select({
             "_id": 1, "userName": 1, "email": 1, "password": 1
         })
 
@@ -78,7 +78,7 @@ const updateStudentData = async (req, res) => {
             return res.status(400).send({ status: false, message: msgUserData })
         }
 
-        const isUnique = await studentModel.findOne({ "userId": userId, "_id": sId, "isDeleted": false });
+        const isUnique = await usersModel.findOne({ "userId": userId, "_id": sId, "isDeleted": false });
         if (!isUnique) return res.status(404).send({ status: false, message: "Invalid student" })
 
         if (password) {
@@ -87,7 +87,7 @@ const updateStudentData = async (req, res) => {
             const hashpassword = await bcrypt.hash(password, salt);
             data.password = hashpassword;
         }
-        await studentModel.findOneAndUpdate({ _id: isUnique._id }, data, { new: true })
+        await usersModel.findOneAndUpdate({ _id: isUnique._id }, data, { new: true })
         return res.status(200).send({ status: true, message: "studet profile updated" });
 
     } catch (error) {
@@ -103,10 +103,10 @@ const deleteStudentData = async (req, res) => {
         let userId = req.Id
 
         //Input data validation
-        const isUnique = await studentModel.findOne({ "_id": sId, "isDeleted": false, "userId": userId });
+        const isUnique = await usersModel.findOne({ "_id": sId, "isDeleted": false, "userId": userId });
 
 
-        await studentModel.findOneAndUpdate({ _id: isUnique._id }, { "isDeleted": true }, { new: true })
+        await usersModel.findOneAndUpdate({ _id: isUnique._id }, { "isDeleted": true }, { new: true })
         return res.status(200).send({ status: true, message: "studet profile is Deleted" });
 
     } catch (error) {
