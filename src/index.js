@@ -42,6 +42,6 @@ if (process.env.NODE_ENV == 'production') {
 
 
 
-app.listen(process.env.PORT || 5000, function () {
-    console.log('Express app running on port ' + (process.env.PORT || 5000))
+app.listen(process.env.PORT || 8080, function () {
+    console.log('Express app running on port ' + (process.env.PORT || 8080))
 });
